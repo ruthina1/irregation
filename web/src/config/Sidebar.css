@@ -1,0 +1,371 @@
+/* =========================================================
+   IAIMS PROFESSIONAL SIDEBAR
+   White + Institutional Blue
+========================================================= */
+
+.iaims-sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid #e3edf7;
+  box-shadow: 2px 0 12px rgba(13, 71, 161, 0.06);
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* =========================================================
+   BRAND / LOGO
+========================================================= */
+
+.iaims-brand {
+  height: 112px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #eaf0f6;
+}
+
+.iaims-logo-wrapper {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.iaims-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.iaims-brand-text {
+  min-width: 0;
+}
+
+.iaims-title {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #0d47a1;
+  line-height: 1.2;
+}
+
+.iaims-subtitle {
+  margin-top: 4px;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: #607d8b;
+  font-weight: 500;
+}
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+.iaims-section-label {
+  padding: 17px 22px 8px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+
+  color: #90a4ae;
+}
+
+/* =========================================================
+   MENU CONTAINER
+========================================================= */
+
+.iaims-menu-container {
+  height: calc(100vh - 165px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 5px 10px 70px;
+}
+
+/* Scrollbar */
+
+.iaims-menu-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.iaims-menu-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.iaims-menu-container::-webkit-scrollbar-thumb {
+  background: #d6e4f2;
+  border-radius: 10px;
+}
+
+.iaims-menu-container::-webkit-scrollbar-thumb:hover {
+  background: #b8cde2;
+}
+
+/* =========================================================
+   ANT DESIGN MENU RESET
+========================================================= */
+
+.iaims-menu {
+  background: transparent !important;
+  border-inline-end: none !important;
+  color: #263238;
+}
+
+/* =========================================================
+   TOP LEVEL ITEMS
+========================================================= */
+
+.iaims-menu > .ant-menu-item,
+.iaims-menu > .ant-menu-submenu > .ant-menu-submenu-title {
+  height: 46px;
+  line-height: 46px;
+
+  margin: 3px 0 !important;
+  width: 100%;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #37474f;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.iaims-menu .ant-menu-item:hover,
+.iaims-menu .ant-menu-submenu-title:hover {
+  color: #1565c0 !important;
+  background: #f2f7fd !important;
+}
+
+/* =========================================================
+   SELECTED ITEM
+========================================================= */
+
+.iaims-menu .ant-menu-item-selected {
+  color: #0d47a1 !important;
+
+  background: #eaf3ff !important;
+
+  font-weight: 700;
+
+  position: relative;
+}
+
+/* Blue indicator */
+
+.iaims-menu .ant-menu-item-selected::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+
+  width: 3px;
+
+  background: #1565c0;
+
+  border-radius: 0 4px 4px 0;
+}
+
+/* Selected icon */
+
+.iaims-menu .ant-menu-item-selected .ant-menu-item-icon {
+  color: #1565c0 !important;
+}
+
+/* =========================================================
+   GROUP HEADERS
+========================================================= */
+
+.iaims-menu
+  .ant-menu-submenu-title {
+  font-weight: 700;
+  color: #263238;
+}
+
+/* Open group */
+
+.iaims-menu
+  .ant-menu-submenu-open
+  > .ant-menu-submenu-title {
+  color: #0d47a1;
+}
+
+/* =========================================================
+   NESTED MENU
+========================================================= */
+
+.iaims-menu .ant-menu-sub {
+  background: #f9fbfd !important;
+
+  border-left: 1px solid #e3edf7;
+
+  margin-left: 15px;
+  padding-left: 5px;
+}
+
+/* Nested items */
+
+.iaims-menu .ant-menu-sub .ant-menu-item,
+.iaims-menu .ant-menu-sub .ant-menu-submenu-title {
+  height: 40px;
+  line-height: 40px;
+
+  margin: 2px 0 !important;
+
+  border-radius: 7px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #546e7a;
+}
+
+/* Nested hover */
+
+.iaims-menu .ant-menu-sub .ant-menu-item:hover {
+  color: #1565c0 !important;
+  background: #edf5fd !important;
+}
+
+/* Nested selected */
+
+.iaims-menu .ant-menu-sub .ant-menu-item-selected {
+  color: #1565c0 !important;
+  background: #e5f0fc !important;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   DIVIDERS
+========================================================= */
+
+.iaims-menu .ant-menu-item-divider {
+  margin: 10px 8px !important;
+  background: #e6eef5 !important;
+}
+
+/* =========================================================
+   ARROWS
+========================================================= */
+
+.iaims-menu
+  .ant-menu-submenu-arrow {
+  color: #90a4ae;
+}
+
+.iaims-menu
+  .ant-menu-submenu-title:hover
+  .ant-menu-submenu-arrow {
+  color: #1565c0;
+}
+
+/* =========================================================
+   COLLAPSE BUTTON
+========================================================= */
+
+.iaims-collapse-btn {
+  position: absolute;
+
+  bottom: 14px;
+  left: 12px;
+  right: 12px;
+
+  height: 42px;
+
+  border: 1px solid #e0eaf3;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #546e7a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+}
+
+.iaims-collapse-btn:hover {
+  color: #1565c0;
+  background: #f2f7fd;
+  border-color: #c7dcf2;
+}
+
+/* =========================================================
+   COLLAPSED MODE
+========================================================= */
+
+.ant-layout-sider-collapsed .iaims-brand {
+  justify-content: center;
+  padding: 12px;
+}
+
+.ant-layout-sider-collapsed .iaims-logo-wrapper {
+  width: 48px;
+  height: 48px;
+}
+
+.ant-layout-sider-collapsed .iaims-menu-container {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.ant-layout-sider-collapsed
+  .iaims-menu
+  > .ant-menu-item,
+.ant-layout-sider-collapsed
+  .iaims-menu
+  > .ant-menu-submenu
+  > .ant-menu-submenu-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .iaims-sidebar {
+    box-shadow: 4px 0 20px rgba(13, 71, 161, 0.12);
+  }
+
+  .iaims-brand {
+    height: 95px;
+  }
+
+  .iaims-menu-container {
+    height: calc(100vh - 145px);
+  }
+}

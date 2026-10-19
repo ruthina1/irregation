@@ -1,0 +1,23 @@
+{
+    "name": "iaims/irrigation",
+    "description": "IAIMS Irrigation Development & Drainage module (study & design, construction, institutions, water utilization, crop production, reports).",
+    "type": "laravel-module",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Irrigation\\Providers\\": "Providers/",
+            "Modules\\Irrigation\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\Irrigation\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Irrigation\\Tests\\": "tests/"
+        }
+    }
+}

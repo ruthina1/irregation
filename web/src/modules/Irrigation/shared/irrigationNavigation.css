@@ -1,0 +1,59 @@
+/* Sidebar look for the Irrigation entries only (scoped to .irr-nav),
+   matching the reference: outlined icons, dashed sub-items, soft highlights. */
+
+.irr-nav .ant-menu-item .anticon,
+.irr-nav .ant-menu-submenu-title .anticon {
+  font-size: 15px;
+}
+
+/* Group titles */
+.irr-nav .ant-menu-submenu-title {
+  border-radius: 8px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.irr-nav.ant-menu-submenu-open > .ant-menu-submenu-title,
+.irr-nav .ant-menu-submenu-open > .ant-menu-submenu-title {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* Nested lists sit on the sidebar colour instead of a darker block */
+.irr-nav .ant-menu-sub.ant-menu-inline {
+  background: transparent !important;
+}
+
+/* Leaf items */
+.irr-nav .ant-menu-sub .ant-menu-item {
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.82) !important;
+  border-radius: 8px !important;
+}
+.irr-nav-leaf-icon {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+}
+.irr-nav-dash {
+  display: inline-block;
+  width: 10px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.ant-menu-inline-collapsed .irr-nav-dash,
+.irr-nav-popup .irr-nav-dash {
+  display: none;
+}
+
+/* Selected item: soft white pill, not a solid fill */
+.irr-nav .ant-menu-item.ant-menu-item-selected {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #fff !important;
+  font-weight: 500;
+}
+.irr-nav .ant-menu-item:not(.ant-menu-item-selected):hover,
+.irr-nav .ant-menu-submenu-title:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #fff !important;
+}

@@ -1,0 +1,319 @@
+/*
+ * Irrigation module look: white surfaces, thin grey borders, one green accent.
+ * Everything is scoped to .irr-page so other modules are untouched.
+ */
+.irr-page {
+  --irr-accent: #1a5f2c;
+  --irr-accent-soft: #eef5f0;
+  --irr-border: #e5e7eb;
+  --irr-text: #1f2937;
+  --irr-muted: #6b7280;
+  --irr-bg: #f8fafc;
+
+  position: relative;
+  min-height: 100%;
+  padding: 24px;
+  background: var(--irr-bg);
+  color: var(--irr-text);
+}
+
+/* Cards: flat, bordered, no coloured edges or shadows */
+.irr-page .ant-card {
+  border: 1px solid var(--irr-border) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  background: #fff;
+}
+.irr-page .ant-card .ant-card-head {
+  border-bottom: 1px solid var(--irr-border);
+  min-height: 48px;
+}
+.irr-page .ant-card .ant-card-head-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--irr-text);
+}
+
+/* Statistic values in plain dark text */
+.irr-page .ant-statistic-title {
+  color: var(--irr-muted);
+  font-size: 13px;
+}
+.irr-page .ant-statistic-content {
+  color: var(--irr-text) !important;
+  font-weight: 600;
+}
+
+/* Tables: white, light header, roomy rows */
+.irr-page .ant-table-wrapper {
+  background: #fff;
+  border: 1px solid var(--irr-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.irr-page .ant-card .ant-table-wrapper {
+  border: none;
+  border-radius: 0;
+}
+.irr-page .ant-table-thead > tr > th {
+  background: #fff !important;
+  color: #4b5563 !important;
+  font-weight: 500 !important;
+  font-size: 13px;
+  border-bottom: 1px solid var(--irr-border) !important;
+}
+.irr-page .ant-table-thead > tr > th::before {
+  display: none;
+}
+.irr-page .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9;
+}
+.irr-page .ant-table-tbody > tr:hover > td {
+  background: #fafafa !important;
+}
+.irr-page .ant-table-pagination {
+  padding: 0 16px;
+}
+
+/* Tags: soft pills; only status colours (success / warning / error) keep a tint */
+.irr-page .ant-tag {
+  border: none;
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+}
+.irr-page .ant-tag-green,
+.irr-page .ant-tag-success {
+  background: #ecf6ef;
+  color: #1a5f2c;
+}
+.irr-page .ant-tag-orange,
+.irr-page .ant-tag-gold,
+.irr-page .ant-tag-warning,
+.irr-page .ant-tag-volcano {
+  background: #fdf6e7;
+  color: #92600a;
+}
+.irr-page .ant-tag-red,
+.irr-page .ant-tag-error {
+  background: #fdeeee;
+  color: #b42318;
+}
+.irr-page .ant-tag-blue,
+.irr-page .ant-tag-geekblue,
+.irr-page .ant-tag-cyan,
+.irr-page .ant-tag-purple,
+.irr-page .ant-tag-magenta,
+.irr-page .ant-tag-lime,
+.irr-page .ant-tag-processing {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* Tabs: underline style in the accent colour */
+.irr-page .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--irr-accent) !important;
+}
+.irr-page .ant-tabs-ink-bar {
+  background: var(--irr-accent) !important;
+}
+
+/* Primary buttons and progress bars use the single accent */
+.irr-page .ant-btn-primary:not(.ant-btn-dangerous) {
+  background: var(--irr-accent) !important;
+  border-color: var(--irr-accent) !important;
+  box-shadow: none;
+}
+.irr-page .ant-progress-bg {
+  background: var(--irr-accent);
+}
+
+/* Inputs and selects slightly rounder, like the reference screens */
+.irr-page .ant-input-affix-wrapper,
+.irr-page .ant-input,
+.irr-page .ant-select-selector,
+.irr-page .ant-picker,
+.irr-page .ant-btn {
+  border-radius: 8px !important;
+}
+
+/* Breadcrumb (page title is in the navbar) */
+.irr-page .irr-breadcrumb {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.irr-page .irr-breadcrumb li:last-child,
+.irr-page .irr-breadcrumb li:last-child .ant-breadcrumb-link {
+  color: var(--irr-accent);
+  font-weight: 500;
+}
+
+/* KPI card */
+.irr-page .irr-stat {
+  height: 100%;
+  background: #fff;
+  border: 1px solid var(--irr-border);
+  border-radius: 12px;
+  padding: 18px 20px 14px;
+  display: flex;
+  flex-direction: column;
+}
+.irr-page .irr-stat.is-clickable {
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.irr-page .irr-stat.is-clickable:hover {
+  border-color: #b8cfbf;
+}
+.irr-page .irr-stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.irr-page .irr-stat-title {
+  font-size: 13px;
+  color: var(--irr-muted);
+  line-height: 1.4;
+}
+.irr-page .irr-stat-value {
+  margin-top: 8px;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--irr-text);
+  line-height: 1.2;
+}
+.irr-page .irr-stat-value .irr-stat-suffix {
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: 4px;
+  color: #374151;
+}
+.irr-page .irr-stat-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--irr-accent-soft);
+  color: var(--irr-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.irr-page .irr-stat-foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 12px;
+  color: var(--irr-muted);
+}
+.irr-page .irr-stat-top + .irr-stat-foot,
+.irr-page .irr-stat-extra + .irr-stat-foot {
+  margin-top: 14px;
+}
+
+/* Toolbar: one row between the KPI cards and the table.
+   filters (left) | fiscal year + refresh | page actions (right) */
+.irr-page .irr-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 20px 0 16px;
+}
+.irr-page .irr-toolbar .irr-filterbar {
+  display: contents;
+}
+.irr-page .irr-filterbar-filters {
+  order: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+.irr-page .irr-filterbar-filters > * {
+  flex: 0 1 auto;
+  min-width: 110px;
+}
+.irr-page .irr-filterbar-filters > .ant-input-affix-wrapper:first-child,
+.irr-page .irr-filterbar-filters > .ant-input-search:first-child {
+  flex: 1 1 260px;
+  min-width: 160px;
+}
+.irr-page .irr-toolbar-controls {
+  order: 2;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.irr-page .irr-filterbar-actions,
+.irr-page .irr-toolbar-actions {
+  order: 3;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  flex: none;
+}
+.irr-page .irr-toolbar .ant-btn {
+  white-space: nowrap;
+}
+
+/* A FilterBar used outside the toolbar still lays out as one row */
+.irr-page .irr-filterbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 991px) {
+  .irr-page .irr-toolbar,
+  .irr-page .irr-filterbar-filters {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .irr-page {
+    padding: 16px;
+  }
+}
+
+/* Space between the table and the charts that follow it */
+.irr-page > .ant-table-wrapper,
+.irr-page > .ant-card,
+.irr-page > .ant-tabs {
+  margin-bottom: 16px;
+}
+
+/* Status / KPI cards container with top-right refresh button */
+.irr-page .irr-stats-section {
+  position: relative;
+  margin-bottom: 8px;
+}
+.irr-page .irr-stats-refresh-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.irr-page .irr-stats-refresh-btn {
+  background: #fff;
+  border: 1px solid var(--irr-border);
+  color: var(--irr-text);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+.irr-page .irr-stats-refresh-btn:hover {
+  border-color: var(--irr-accent) !important;
+  color: var(--irr-accent) !important;
+}
+

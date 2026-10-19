@@ -1,0 +1,11 @@
+{
+    "name": "Irrigation",
+    "alias": "irrigation",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Irrigation\\Providers\\IrrigationServiceProvider"
+    ],
+    "files": []
+}
