@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Divider, Form, Input, InputNumber, Modal, Row, Select, Space, Tag } from 'antd';
-import { PlusCircleOutlined, SendOutlined } from '@ant-design/icons';
+import { AutoComplete, Button, Col, Divider, Form, Input, InputNumber, Modal, Row, Select, Space, Tag } from 'antd';
+import { ExperimentOutlined, PlusCircleOutlined, SendOutlined } from '@ant-design/icons';
+import ComputedTotal from '../../shared/components/ComputedTotal';
 import EthDateFields from '../../shared/components/EthDateFields';
 import { ETHIOPIAN_FISCAL_YEARS } from '../../shared/constants';
 import { ethDateFields, extractName, toNumber } from '../../shared/utils';
-
-
-
-
-
-
-
 import {
   CROPPING_ROUNDS, FUNDING_PROGRAMS, findInputOption, INPUT_NAME_OPTIONS, INPUT_UNITS, IRRIGATION_SEASONS,
-  NEW_ALLOCATION_DEFAULTS,
+  NEW_ALLOCATION_DEFAULTS, deliveryPercent,
 } from './AgriculturalInputUtilizationManagement';
 
 const sectionStyle = { margin: '6px 0 10px', fontSize: 12, color: '#1a5f2c', fontWeight: 600 };

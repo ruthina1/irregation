@@ -1,8 +1,8 @@
 import { Button, Popconfirm, Progress, Select, Space, Table, Tag, Tooltip } from 'antd';
 import { CalendarOutlined, DeleteOutlined, EditOutlined, EyeOutlined, LinkOutlined } from '@ant-design/icons';
-import { orNotTracked, PROGRESS_HEALTH_STATUSES } from './ConstructionProgressPerformanceManagement';
+import { orNotTracked, PROGRESS_HEALTH_STATUSES } from './ConstructionProgressPerformanceConstants';
 
-const HEALTH_OPTIONS = PROGRESS_HEALTH_STATUSES.map((s) => ({
+const HEALTH_OPTIONS = (PROGRESS_HEALTH_STATUSES || []).map((s) => ({
   value: s.value,
   label: <Tag color={s.color} style={{ margin: 0 }}>{s.label}</Tag>,
 }));

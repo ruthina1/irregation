@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { App } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
@@ -197,10 +197,16 @@ function useProjectFunding() {
     (c) => extractName(c.scheme_name, '').toLowerCase() === (schemeName || '').toLowerCase()
   );
 
+  const openContract = (contractCode) => navigate('/irrigation/construction/projects', { state: { filterContractCode: contractCode } });
+
   return {
     fiscalYear, setFiscalYear, searchTerm, setSearchTerm, programFilter, setProgramFilter, statusFilter, setStatusFilter,
-    funding, contracts: contracts.records, filteredRecords, stats, chartData,
-    saveRecord, changeStatus, disburse, deleteRecord, exportCsv, findContract,
+    funding, funds: funding, contracts: contracts.records, filteredRecords, stats, chartData,
+    reload: funding.reload,
+    saveRecord, saveFunding: saveRecord,
+    changeStatus, disburse,
+    deleteRecord, deleteFunding: deleteRecord,
+    exportCsv, findContract, openContract,
   };
 }
 
@@ -214,13 +220,15 @@ function ProjectFundingFinancingContent() {
   const [disbursingRecord, setDisbursingRecord] = useState(null);
   const [dossierRecord, setDossierRecord] = useState(null);
 
+  const fundingObj = page.funding || page.funds || {};
+
   return (
     <div className="irr-page">
       <IrrigationBreadcrumb section="Irrigation Construction & Monitoring" title="Project Funding & Financing (የመስኖ ፋይናንስ እና በጀት)" />
 
-      <LoadErrorAlert error={page.funds.error} onRetry={page.reload} />
+      <LoadErrorAlert error={fundingObj.error} onRetry={page.reload} />
 
-      <IrrigationStatsSection onRefresh={page.reload} loading={page.funds.loading}>
+      <IrrigationStatsSection onRefresh={page.reload} loading={fundingObj.loading}>
         <FundingStats stats={page.stats} />
       </IrrigationStatsSection>
 
@@ -231,7 +239,7 @@ function ProjectFundingFinancingContent() {
         fiscalYear={page.fiscalYear}
         onFiscalYearChange={page.setFiscalYear}
         onRefresh={page.reload}
-        loading={page.funds.loading}
+        loading={fundingObj.loading}
       >
         <FundingFilters
           searchTerm={page.searchTerm}
@@ -247,10 +255,11 @@ function ProjectFundingFinancingContent() {
 
       <FundingTable
         data={page.filteredRecords}
-        loading={page.funds.loading}
+        loading={fundingObj.loading}
         onView={setDossierRecord}
         onEdit={(record) => setFormState({ open: true, record })}
         onDelete={page.deleteFunding}
+        onStatusChange={page.changeStatus}
         onDisburse={setDisbursingRecord}
         onOpenContract={page.openContract}
       />
@@ -261,7 +270,7 @@ function ProjectFundingFinancingContent() {
         open={formState.open}
         editingRecord={formState.record}
         contracts={page.contracts}
-        nextCode={`FND-${page.fiscalYear.slice(0, 4)}-${String(page.funds.records.length + 1).padStart(3, '0')}`}
+        nextCode={`FND-${page.fiscalYear.slice(0, 4)}-${String((fundingObj.records || []).length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, record: null })}
         onSubmit={(values, form) => page.saveFunding(values, formState.record, form)}
       />

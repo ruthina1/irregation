@@ -5,8 +5,8 @@ import { extractName, toNumber } from '../../shared/utils';
 import { QA_CERTIFIED, QA_CHECKS, REVIEW_CHECKS } from './DesignQualityAssuranceManagement';
 
 /** Prerequisite design document review, fetched by code from the document-review resource. */
-export function LinkedReviewModal({ state, onClose }) {
-  const { open, loading, review, code } = state;
+export function LinkedReviewModal({ state = {}, onClose }) {
+  const { open = false, loading = false, review = null, code = null } = state || {};
 
   return (
     <Modal

@@ -1,7 +1,7 @@
 import { Button, Card, Col, Descriptions, Divider, Modal, Row, Tag } from 'antd';
 import { CalendarOutlined, EnvironmentOutlined, LineChartOutlined, LinkOutlined } from '@ant-design/icons';
 import { extractName } from '../../shared/utils';
-import { HEALTHY_STATUSES, NOT_TRACKED, orNotTracked } from './ConstructionProgressPerformanceManagement';
+import { HEALTHY_STATUSES, NOT_TRACKED, orNotTracked } from './ConstructionProgressPerformanceConstants';
 
 const WbsCard = ({ label, value, color, fontSize = 16 }) => (
   <Col span={6}>

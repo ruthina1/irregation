@@ -1,7 +1,7 @@
 import { Button, Input, Select } from 'antd';
 import { DownloadOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import FilterBar from '../../shared/components/FilterBar';
-import { PROGRESS_HEALTH_STATUSES, SCHEME_TYPES } from './ConstructionProgressPerformanceManagement';
+import { PROGRESS_HEALTH_STATUSES, SCHEME_TYPES } from './ConstructionProgressPerformanceConstants';
 
 /** Search, classification / health filters, export and "Log Site Inspection". */
 export default function ProgressFilters({

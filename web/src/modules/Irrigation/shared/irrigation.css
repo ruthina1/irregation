@@ -55,21 +55,32 @@
   border: none;
   border-radius: 0;
 }
+.irr-page .ant-table-thead th,
 .irr-page .ant-table-thead > tr > th {
-  background: #fff !important;
-  color: #4b5563 !important;
-  font-weight: 500 !important;
+  background: #f8fafc !important;
+  color: #374151 !important;
+  font-weight: 600 !important;
   font-size: 13px;
   border-bottom: 1px solid var(--irr-border) !important;
 }
 .irr-page .ant-table-thead > tr > th::before {
   display: none;
 }
+.irr-page .ant-table-title {
+  background: #f8fafc !important;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid var(--irr-border);
+}
 .irr-page .ant-table-tbody > tr > td {
   border-bottom: 1px solid #f1f5f9;
 }
 .irr-page .ant-table-tbody > tr:hover > td {
   background: #fafafa !important;
+}
+.irr-page .ant-table-tbody > tr.irr-table-clickable-row:hover > td {
+  background: #f0fdf4 !important;
+  cursor: pointer;
 }
 .irr-page .ant-table-pagination {
   padding: 0 16px;
@@ -193,16 +204,56 @@
 }
 .irr-page .irr-stat-icon {
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
-  background: var(--irr-accent-soft);
-  color: var(--irr-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 1;
+  background: #e8f7f0;
+  color: #10b981;
+  transition: all 0.2s ease;
 }
+
+.irr-page .irr-stat-icon .anticon {
+  font-size: 20px;
+  color: inherit;
+}
+
+/* 1st card in a grid/row: Soft Mint/Green (matching registered zones) */
+.irr-page .ant-row > .ant-col:nth-child(4n + 1) .irr-stat-icon,
+.irr-page .irr-stat-grid > :nth-child(4n + 1) .irr-stat-icon,
+.irr-page .irr-stat-icon--green {
+  background: #e8f7f0 !important;
+  color: #10b981 !important;
+}
+
+/* 2nd card in a grid/row: Soft Blue (matching active woredas) */
+.irr-page .ant-row > .ant-col:nth-child(4n + 2) .irr-stat-icon,
+.irr-page .irr-stat-grid > :nth-child(4n + 2) .irr-stat-icon,
+.irr-page .irr-stat-icon--blue {
+  background: #e8f3fc !important;
+  color: #1677ff !important;
+}
+
+/* 3rd card in a grid/row: Soft Orange/Peach (matching mapped kebeles) */
+.irr-page .ant-row > .ant-col:nth-child(4n + 3) .irr-stat-icon,
+.irr-page .irr-stat-grid > :nth-child(4n + 3) .irr-stat-icon,
+.irr-page .irr-stat-icon--orange {
+  background: #fef0e6 !important;
+  color: #fa8c16 !important;
+}
+
+/* 4th card in a grid/row: Soft Purple/Lavender (matching total registered land) */
+.irr-page .ant-row > .ant-col:nth-child(4n + 4) .irr-stat-icon,
+.irr-page .irr-stat-grid > :nth-child(4n + 4) .irr-stat-icon,
+.irr-page .irr-stat-icon--purple {
+  background: #f5f0ff !important;
+  color: #722ed1 !important;
+}
+
 .irr-page .irr-stat-foot {
   margin-top: auto;
   padding-top: 10px;
@@ -241,9 +292,12 @@
   min-width: 110px;
 }
 .irr-page .irr-filterbar-filters > .ant-input-affix-wrapper:first-child,
-.irr-page .irr-filterbar-filters > .ant-input-search:first-child {
-  flex: 1 1 260px;
+.irr-page .irr-filterbar-filters > .ant-input-search:first-child,
+.irr-page .irr-filterbar-filters > .ant-input:first-child,
+.irr-page .irr-toolbar .irr-toolbar-search {
+  flex: 1 1 auto;
   min-width: 160px;
+  width: 100%;
 }
 .irr-page .irr-toolbar-controls {
   order: 2;
@@ -305,6 +359,13 @@
   margin-bottom: 8px;
 }
 .irr-page .irr-stats-refresh-btn {
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: #fff;
   border: 1px solid var(--irr-border);
   color: var(--irr-text);
@@ -315,5 +376,31 @@
 .irr-page .irr-stats-refresh-btn:hover {
   border-color: var(--irr-accent) !important;
   color: var(--irr-accent) !important;
+}
+
+/* Breadcrumb row: aligns breadcrumbs on left with extra actions / refresh on far right */
+.irr-page .irr-breadcrumb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  min-height: 32px;
+}
+
+.irr-page .irr-breadcrumb-row .irr-breadcrumb {
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.irr-page .irr-breadcrumb-extra {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: 16px;
+  min-height: 32px;
+  gap: 8px;
 }
 

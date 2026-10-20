@@ -1,7 +1,7 @@
 import { Button, Popconfirm, Progress, Select, Space, Table, Tag, Tooltip } from 'antd';
 import { DeleteOutlined, EditOutlined, EnvironmentOutlined, EyeOutlined, LinkOutlined } from '@ant-design/icons';
 import { extractName, toNumber } from '../../shared/utils';
-import { BENEFIT_STATUSES, cropList } from './DevelopedLandBeneficiariesManagement';
+import { BENEFIT_STATUSES, cropList } from './DevelopedLandBeneficiariesConstants';
 
 const buildColumns = ({ onView, onEdit, onDelete, onStatusChange, onOpenContract }) => [
   {

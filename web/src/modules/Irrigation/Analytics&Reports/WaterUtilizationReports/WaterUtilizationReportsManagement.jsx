@@ -1,10 +1,11 @@
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { NOT_TRACKED, exportReport, sum } from '../shared/reportUtils';
-import WaterUtilizationKpis from './WaterUtilizationReportsStats';
+import WaterUtilizationKpis, { WaterUtilizationCharts } from './WaterUtilizationReportsStats';
 import WaterUtilizationTable from './WaterUtilizationReportsTable';
 import WaterUtilizationReportsFilters from './WaterUtilizationReportsFilters';
 import WaterUtilizationReportsForm from './WaterUtilizationReportsForm';
@@ -61,6 +62,9 @@ function useWaterUtilizationReport() {
 
 function WaterUtilizationReportsContent() {
   const { report, rows, stats, exportCsv } = useWaterUtilizationReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -78,11 +82,21 @@ function WaterUtilizationReportsContent() {
         onExport={exportCsv}
       />
 
-      <WaterUtilizationTable rows={rows} loading={report.loading} />
+      {showCharts && <WaterUtilizationCharts rows={rows} stats={stats} selectedZone={report.selectedZone} />}
+      {showTable && (
+        <WaterUtilizationTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <WaterUtilizationReportsFilters />
       <WaterUtilizationReportsForm />
-      <WaterUtilizationReportsDetail />
+      <WaterUtilizationReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

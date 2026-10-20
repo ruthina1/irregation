@@ -18,12 +18,13 @@ const EDITABLE_FIELDS = [
 ];
 
 /** Log / edit a WUA leadership & member training session (linked to a registered WUA). */
-export default function TrainingFormModal({ open, editingTraining, wuas, fiscalYear, nextCode, onCancel, onSubmit }) {
+export default function TrainingFormModal({ open, editingTraining, wuas = [], fiscalYear, nextCode, onCancel, onSubmit }) {
+  const safeWuas = Array.isArray(wuas) ? wuas : (Array.isArray(wuas?.records) ? wuas.records : []);
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const selectedWuaId = Form.useWatch('wua_id', form);
-  const selectedWua = wuas.find((w) => w.id === selectedWuaId) || null;
+  const selectedWua = safeWuas.find((w) => w.id === selectedWuaId) || null;
 
   useEffect(() => {
     if (!open) return;
@@ -38,7 +39,7 @@ export default function TrainingFormModal({ open, editingTraining, wuas, fiscalY
 
   // Selecting a WUA pre-fills the leadership trainee counts from its executive committee.
   const handleWuaSelect = (wuaId) => {
-    const matched = wuas.find((w) => w.id === wuaId);
+    const matched = safeWuas.find((w) => w.id === wuaId);
     if (!matched) return;
     form.setFieldsValue({
       exec_leaders_male: matched.committee_male || 5,
@@ -90,7 +91,7 @@ export default function TrainingFormModal({ open, editingTraining, wuas, fiscalY
                 showSearch
                 optionFilterProp="label"
                 notFoundContent="No registered WUAs — register one in the WUA Registry first"
-                options={wuas.map((w) => ({ value: w.id, label: `${w.wua_name} (${w.wua_reg_code})` }))}
+                options={safeWuas.map((w) => ({ value: w.id, label: `${w.wua_name} (${w.wua_reg_code})` }))}
               />
             </Form.Item>
           </Col>

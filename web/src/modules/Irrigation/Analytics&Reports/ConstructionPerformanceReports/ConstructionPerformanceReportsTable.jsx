@@ -1,51 +1,103 @@
-import { Progress, Table, Tag } from 'antd';
-import { EMPTY_TEXT, fmt, millions } from '../shared/reportUtils';
+import { Button, Progress, Table, Tag, Tooltip } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
+import { EMPTY_TEXT, fmt, millions, PROGRESS_BAR_COLORS } from '../shared/reportUtils';
 
-/** Average progress is null when the channel has no scheme of that type. */
-const ProgressValue = ({ value, good, goodColor, badColor }) => {
-  if (value === null || value === undefined) return <span style={{ color: '#8c8c8c' }}>No schemes</span>;
-  return <span style={{ fontWeight: 700, color: value >= good ? goodColor : badColor }}>{value}%</span>;
-};
-
-const columns = [
-  { title: 'Financing Channel (የበጀት ምንጭ/ፕሮግራም)', dataIndex: 'program', key: 'program', render: (p) => <strong style={{ color: '#1a5f2c' }}>{p}</strong> },
-  {
-    title: 'Schemes (አዲስ / ነባር)', key: 'schemes',
-    render: (_, r) => (
-      <span>
-        <Tag color="default">New: {r.new_schemes_count}</Tag>
-        <Tag color="gold">Rehab: {r.existing_rehab_count}</Tag>
-      </span>
-    ),
-  },
-  {
-    title: 'New Scheme Progress (አማካይ 66% ግብ)', dataIndex: 'avg_new_physical_pct', key: 'avg_new_physical_pct',
-    render: (v) => <ProgressValue value={v} good={66} goodColor="#1a5f2c" badColor="#a16207" />,
-  },
-  {
-    title: 'Rehab Scheme Progress (አማካይ 30.3% መነሻ)', dataIndex: 'avg_rehab_physical_pct', key: 'avg_rehab_physical_pct',
-    render: (v) => <ProgressValue value={v} good={30} goodColor="#5b8a6b" badColor="#b42318" />,
-  },
-  {
-    title: 'Disbursed Budget / Allocation', key: 'budget',
-    render: (_, r) => {
-      const allocated = Number(r.allocated_budget_etb) || 0;
-      const rate = allocated > 0 ? Math.round(((Number(r.disbursed_etb) || 0) / allocated) * 100) : 0;
-      return (
-        <div style={{ fontSize: 11 }}>
-          <strong>{millions(r.disbursed_etb)}M</strong> / {millions(r.allocated_budget_etb)}M ETB
-          <Progress percent={rate} size="small" strokeColor="#1a5f2c" />
-        </div>
-      );
+export default function ConstructionProgramTable({ rows = [], loading, onView }) {
+  const columns = [
+    {
+      title: 'Financing Channel (የበጀት ምንጭ/ፕሮግራም)',
+      dataIndex: 'program',
+      key: 'program',
+      width: 200,
+      render: (p) => <strong style={{ color: '#1a5f2c', fontSize: 13 }}>{p}</strong>,
     },
-  },
-  { title: 'Command Area (ሄ/ር)', dataIndex: 'developed_land_ha', key: 'developed_land_ha', render: (ha) => <strong style={{ color: '#1a5f2c' }}>{fmt(ha)} Ha</strong> },
-  { title: 'Beneficiaries (ተጠቃሚዎች)', dataIndex: 'beneficiaries_total', key: 'beneficiaries_total', render: (f) => `${fmt(f)} Farmers` },
-];
+    {
+      title: 'Active Schemes (አዲስ/ነባር)',
+      key: 'schemes',
+      width: 180,
+      render: (_, r) => (
+        <span>
+          <Tag color="default">New: {r.new_schemes_count ?? 0}</Tag>
+          <Tag color="gold">Rehab: {r.existing_rehab_count ?? 0}</Tag>
+        </span>
+      ),
+    },
+    {
+      title: 'Disbursed / Allocation (ETB)',
+      key: 'budget',
+      width: 220,
+      render: (_, r) => {
+        const allocated = Number(r.allocated_budget_etb) || 0;
+        const rate = allocated > 0 ? Math.round(((Number(r.disbursed_etb) || 0) / allocated) * 100) : 0;
+        return (
+          <div style={{ fontSize: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span><strong>{millions(r.disbursed_etb)}M</strong> / {millions(r.allocated_budget_etb)}M ETB</span>
+              <Tag color={rate >= 70 ? 'success' : 'default'} style={{ fontSize: 10, padding: '0 4px', margin: 0 }}>
+                {rate}%
+              </Tag>
+            </div>
+            <Progress
+              percent={rate}
+              size="small"
+              strokeColor={rate >= 70 ? PROGRESS_BAR_COLORS.green : PROGRESS_BAR_COLORS.yellow}
+              trailColor={PROGRESS_BAR_COLORS.trail}
+              showInfo={false}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Command Area (ሄ/ር)',
+      dataIndex: 'developed_land_ha',
+      key: 'developed_land_ha',
+      width: 160,
+      render: (ha) => <strong style={{ color: '#1a5f2c' }}>{fmt(ha)} Ha</strong>,
+    },
+    {
+      title: 'Beneficiaries',
+      dataIndex: 'beneficiaries_total',
+      key: 'beneficiaries_total',
+      width: 160,
+      render: (f) => `${fmt(f)} Farmers`,
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      width: 80,
+      align: 'center',
+      render: (_, r) => (
+        <Tooltip title="View Full Construction Dossier">
+          <Button
+            type="text"
+            size="small"
+            icon={<EyeOutlined style={{ color: '#1a5f2c', fontSize: 15 }} />}
+            onClick={(e) => {
+              e.stopPropagation();
+              onView?.(r);
+            }}
+          />
+        </Tooltip>
+      ),
+    },
+  ];
 
-export default function ConstructionProgramTable({ rows, loading }) {
   return (
-    <Table columns={columns} dataSource={rows} rowKey="key" loading={loading} pagination={false}
-      bordered size="middle" locale={{ emptyText: EMPTY_TEXT }} />
+    <Table
+      columns={columns}
+      dataSource={rows}
+      rowKey={(r) => r.program || r.key || Math.random()}
+      loading={loading}
+      pagination={false}
+      bordered
+      size="middle"
+      locale={{ emptyText: EMPTY_TEXT }}
+      onRow={(record) => ({
+        onClick: () => onView?.(record),
+        style: { cursor: 'pointer' },
+        className: 'irr-table-clickable-row',
+      })}
+    />
   );
 }

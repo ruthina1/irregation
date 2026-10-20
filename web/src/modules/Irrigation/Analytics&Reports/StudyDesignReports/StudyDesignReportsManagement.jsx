@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
@@ -47,6 +48,9 @@ function useStudyDesignReport() {
 
 function StudyDesignReportsContent() {
   const { report, rows, stats, exportCsv } = useStudyDesignReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -64,13 +68,21 @@ function StudyDesignReportsContent() {
         onExport={exportCsv}
       />
 
-      <StudyDesignTable rows={rows} loading={report.loading} />
-
-      <StudyDesignChart rows={rows} />
+      {showCharts && <StudyDesignChart rows={rows} stats={stats} selectedZone={report.selectedZone} />}
+      {showTable && (
+        <StudyDesignTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <StudyDesignReportsFilters />
       <StudyDesignReportsForm />
-      <StudyDesignReportsDetail />
+      <StudyDesignReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

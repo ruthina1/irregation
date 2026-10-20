@@ -4,13 +4,13 @@ import { ThunderboltOutlined } from '@ant-design/icons';
 import ComputedTotal from '../../shared/components/ComputedTotal';
 import { ETHIOPIAN_FISCAL_YEARS } from '../../shared/constants';
 import { extractName, toNumber } from '../../shared/utils';
-import { NEW_SOURCE_DEFAULTS, TECHNOLOGY_CATALOG_GROUPS } from './IrrigationSystemsMethodsManagement';
+import { NEW_SOURCE_DEFAULTS, TECHNOLOGY_CATALOG_GROUPS } from './IrrigationSystemsMethodsConstants';
 
 const sectionStyle = { margin: '6px 0 10px', fontSize: 12, color: '#1a5f2c', fontWeight: 600 };
 const YEAR_OPTIONS = ETHIOPIAN_FISCAL_YEARS.map((y) => ({ value: y, label: y }));
-const TECHNOLOGY_OPTIONS = TECHNOLOGY_CATALOG_GROUPS.map((group) => ({
+const TECHNOLOGY_OPTIONS = (TECHNOLOGY_CATALOG_GROUPS || []).map((group) => ({
   label: group.category,
-  options: group.options.map((opt) => ({ value: opt, label: opt })),
+  options: (group.options || []).map((opt) => ({ value: opt, label: opt })),
 }));
 
 const EDITABLE_FIELDS = [

@@ -1,7 +1,7 @@
 import { Button, Input, Select } from 'antd';
 import { DownloadOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import FilterBar from '../../shared/components/FilterBar';
-import { TECHNOLOGY_STATUSES } from './IrrigationSystemsMethodsManagement';
+import { TECHNOLOGY_STATUSES } from './IrrigationSystemsMethodsConstants';
 
 export default function WaterSourceFilters({ searchTerm, onSearchChange, statusFilter, onStatusChange, onExport, onCreate }) {
   return (

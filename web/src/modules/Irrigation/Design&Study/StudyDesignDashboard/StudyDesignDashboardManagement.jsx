@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { getApiErrorMessage } from '../../shared/utils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { App, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { irrigationStudyDesignApi } from '../../../../services/api/irrigationApi';
@@ -29,6 +30,8 @@ export const FALLBACK_MODALITY_COLORS = ['#a16207', '#64748b', '#5b8a6b', '#a162
 export const ROUTES = {
   pipeline: '/irrigation/study-design/project-identification',
   studies: '/irrigation/study-design/projects',
+  shelf: '/irrigation/study-design/construction-ready',
+  reports: '/irrigation/reports/study-design',
 };
 
 

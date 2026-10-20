@@ -1,10 +1,11 @@
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { exportReport, pct, sum } from '../shared/reportUtils';
-import CropProductionKpis from './CropProductionReportsStats';
+import CropProductionKpis, { CropProductionCharts } from './CropProductionReportsStats';
 import CropProductionTable from './CropProductionReportsTable';
 import CropProductionReportsFilters from './CropProductionReportsFilters';
 import CropProductionReportsForm from './CropProductionReportsForm';
@@ -55,6 +56,9 @@ function useCropProductionReport() {
 
 function CropProductionReportsContent() {
   const { report, rows, stats, exportCsv } = useCropProductionReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -72,11 +76,21 @@ function CropProductionReportsContent() {
         onExport={exportCsv}
       />
 
-      <CropProductionTable rows={rows} loading={report.loading} />
+      {showCharts && <CropProductionCharts rows={rows} stats={stats} selectedZone={report.selectedZone} />}
+      {showTable && (
+        <CropProductionTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <CropProductionReportsFilters />
       <CropProductionReportsForm />
-      <CropProductionReportsDetail />
+      <CropProductionReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

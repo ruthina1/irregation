@@ -4,14 +4,14 @@ import { AreaChartOutlined } from '@ant-design/icons';
 import ComputedTotal from '../../shared/components/ComputedTotal';
 import EthDateFields from '../../shared/components/EthDateFields';
 import { ethDateFields, extractName } from '../../shared/utils';
-import { CROP_CATALOG_GROUPS, FUNDING_PROGRAMS, NEW_BENEFIT_DEFAULTS, SCHEME_TYPES, cropList } from './DevelopedLandBeneficiariesManagement';
+import { CROP_CATALOG_GROUPS, FUNDING_PROGRAMS, NEW_BENEFIT_DEFAULTS, SCHEME_TYPES, cropList } from './DevelopedLandBeneficiariesConstants';
 
 const { TextArea } = Input;
 const sectionStyle = { margin: '6px 0 10px', fontSize: 12, color: '#1a5f2c', fontWeight: 600 };
 
-const CROP_OPTIONS = CROP_CATALOG_GROUPS.map((group) => ({
+const CROP_OPTIONS = (CROP_CATALOG_GROUPS || []).map((group) => ({
   label: group.category,
-  options: group.crops.map((crop) => ({ value: crop, label: crop })),
+  options: (group.crops || []).map((crop) => ({ value: crop, label: crop })),
 }));
 
 /** Log / edit a field-verified developed land & beneficiaries record. */

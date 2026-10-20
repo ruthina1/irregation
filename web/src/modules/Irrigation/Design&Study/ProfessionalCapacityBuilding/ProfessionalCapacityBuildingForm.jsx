@@ -15,7 +15,7 @@ const toOptions = (list) => list.map((v) => ({ value: v, label: v }));
 const matchOption = (input, option) => (option?.value || '').toLowerCase().includes(input.toLowerCase());
 
 /** Register / edit a professional capacity-building course. */
-export default function ProfessionalCapacityBuildingForm({ open, editingTraining, fiscalYear, nextCode, locations, onCancel, onSubmit }) {
+export default function ProfessionalCapacityBuildingForm({ open, editingTraining, fiscalYear, nextCode, locations = {}, onCancel, onSubmit }) {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const selectedZone = Form.useWatch('zone', form);
@@ -42,7 +42,7 @@ export default function ProfessionalCapacityBuildingForm({ open, editingTraining
     if (saved) onCancel();
   };
 
-  const woredaOptions = toOptions(locations[selectedZone] || []);
+  const woredaOptions = toOptions(locations?.[selectedZone] || []);
 
   return (
     <Modal

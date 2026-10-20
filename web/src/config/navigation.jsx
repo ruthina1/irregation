@@ -1,19 +1,27 @@
 import React from 'react';
 import { irrigationNavigation } from '../modules/Irrigation/shared/irrigationNavigation';
+import { MODULE_PERMISSIONS, SUBMODULE_PERMISSIONS } from '../services/api/api';
 
 /* ---------- Helpers ---------- */
 
-const item = (key, label, icon, permissions) => ({
-  key,
-  label: `${icon} ${label}`,
-  ...(permissions && { permissions }),
-});
+const item = (key, label, icon, permissions) => {
+  const perms = permissions || SUBMODULE_PERMISSIONS[key] || MODULE_PERMISSIONS[key] || null;
+  return {
+    key,
+    label: `${icon} ${label}`,
+    ...(perms && { permissions: Array.isArray(perms) ? perms : [perms] }),
+  };
+};
 
-const group = (key, label, icon, children) => ({
-  key,
-  label: `${icon} ${label}`,
-  children,
-});
+const group = (key, label, icon, children, permissions) => {
+  const perms = permissions || MODULE_PERMISSIONS[key] || SUBMODULE_PERMISSIONS[key] || null;
+  return {
+    key,
+    label: `${icon} ${label}`,
+    children,
+    ...(perms && { permissions: Array.isArray(perms) ? perms : [perms] }),
+  };
+};
 
 /* ---------- Navigation ---------- */
 

@@ -1,12 +1,15 @@
+const SOURCE_COLORS = ['#1a5f2c', '#5b8a6b', '#a16207', '#64748b'];
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import irrigationApi from '../../../../services/api/irrigationApi';
+import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import useIrrigationReport from '../../Analytics&Reports/shared/useIrrigationReport';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { extractName, toNumber } from '../../shared/utils';
+import { extractName, sumBy, toNumber } from '../../shared/utils';
 import OverviewKpis, { WaterSourceCategoryChart } from './WaterUtilizationOverviewStats';
 import ZoneUtilizationTable from './WaterUtilizationOverviewTable';
 import WaterPageLinks from './WaterUtilizationOverviewDetail';

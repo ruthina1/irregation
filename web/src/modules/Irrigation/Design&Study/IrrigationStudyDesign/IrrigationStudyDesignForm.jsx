@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Col, Divider, Form, Input, InputNumber, Modal, Row, Select, Space, Tag } from 'antd';
-import { AuditOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { Alert, AutoComplete, Button, Checkbox, Col, Divider, Form, Input, InputNumber, Modal, Row, Select, Space, Spin, Tag } from 'antd';
+import { AuditOutlined, ExperimentOutlined, FileDoneOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import EthDateFields from '../../shared/components/EthDateFields';
 import { ETHIOPIAN_FISCAL_YEARS } from '../../shared/constants';
 import { ethDateFields, extractName, toNumber } from '../../shared/utils';
-import { STUDY_MODALITIES, STUDY_STAGES, QA_STATUSES, WATER_SOURCES, NEW_STUDY_DEFAULTS } from './IrrigationStudyDesignManagement';
+import useLocationLookup from '../../shared/hooks/useLocationLookup';
+import { STUDY_MODALITIES, STUDY_STAGES, QA_STATUSES, QA_PASSED, REVIEW_STATUSES, WATER_SOURCES, NEW_STUDY_DEFAULTS } from './IrrigationStudyDesignManagement';
 
 
 

@@ -4,13 +4,17 @@ import StatCard from '../../shared/components/StatCard';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts';
 
 /** KPI cards (Excel Section 3 O&M indicators). */
-export default function MaintenanceStats({ stats }) {
+export default function MaintenanceStats({ stats = {} }) {
+  const safeStats = stats || {};
+  const totalMale = Number(safeStats.totalMale) || 0;
+  const totalFemale = Number(safeStats.totalFemale) || 0;
+
   return (
     <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Modern Canals Maintained / Cleaned (በዘመናዊ)"
-          value={stats.modernCanalKm}
+          value={safeStats.modernCanalKm || 0}
           precision={1}
           suffix="km"
           prefix={<BuildOutlined />}
@@ -21,7 +25,7 @@ export default function MaintenanceStats({ stats }) {
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Traditional Canals Maintained (በባህላዊ)"
-          value={stats.traditionalCanalKm}
+          value={safeStats.traditionalCanalKm || 0}
           precision={1}
           suffix="km"
           prefix={<ToolOutlined />}
@@ -32,16 +36,16 @@ export default function MaintenanceStats({ stats }) {
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Mobilized Community Labor (ሰው ኃይል)"
-          value={stats.totalMobilizedLabor}
+          value={safeStats.totalMobilizedLabor || 0}
           prefix={<TeamOutlined />}
           color="#5b8a6b"
-          footnote={`Male: ${stats.totalMale.toLocaleString()} • Female: ${stats.totalFemale.toLocaleString()} (${stats.femaleSharePct}%)`}
+          footnote={`Male: ${totalMale.toLocaleString()} • Female: ${totalFemale.toLocaleString()} (${safeStats.femaleSharePct || 0}%)`}
         />
       </Col>
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Protected Command Area"
-          value={stats.totalProtectedHa}
+          value={safeStats.totalProtectedHa || 0}
           suffix="Ha"
           prefix={<AreaChartOutlined />}
           color="#64748b"
@@ -56,7 +60,8 @@ export default function MaintenanceStats({ stats }) {
 // --- MaintenanceCanalChart ---
 
 /** Delivered canal distance per scheme, modern vs traditional (km). */
-export function MaintenanceCanalChart({ data }) {
+export function MaintenanceCanalChart({ data = [] }) {
+  const safeData = Array.isArray(data) ? data : [];
   return (
     <Card
       title={<span style={{ fontSize: 14, fontWeight: 600 }}>Delivered Canal Distance by Scheme: Modern vs. Traditional (Kilometers)</span>}
@@ -64,9 +69,9 @@ export function MaintenanceCanalChart({ data }) {
       style={{ marginBottom: 20, borderRadius: 8 }}
     >
       <div style={{ height: 230 }}>
-        {data.length ? (
+        {safeData.length ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barSize={26}>
+            <BarChart data={safeData} barSize={26}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#595959' }} />
               <YAxis tick={{ fontSize: 11, fill: '#595959' }} unit=" km" />

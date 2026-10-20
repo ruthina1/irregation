@@ -1,7 +1,7 @@
 import { Button, Popconfirm, Select, Space, Table, Tag, Tooltip } from 'antd';
 import { DeleteOutlined, EditOutlined, EnvironmentOutlined, EyeOutlined } from '@ant-design/icons';
 import { extractName, toNumber } from '../../shared/utils';
-import { technologyColor, TECHNOLOGY_STATUSES } from './IrrigationSystemsMethodsManagement';
+import { technologyColor, TECHNOLOGY_STATUSES } from './IrrigationSystemsMethodsConstants';
 
 const buildColumns = ({ onView, onEdit, onDelete, onStatusChange }) => [
   {

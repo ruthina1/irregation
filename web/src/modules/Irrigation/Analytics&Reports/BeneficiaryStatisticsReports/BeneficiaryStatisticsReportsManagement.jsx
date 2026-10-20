@@ -1,3 +1,5 @@
+import { exportRowsToCsv } from '../../shared/utils';
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
@@ -5,7 +7,6 @@ import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { NOT_TRACKED, pct, sum } from '../shared/reportUtils';
 import BeneficiaryKpis, { BeneficiaryCharts } from './BeneficiaryStatisticsReportsStats';
-import BeneficiaryFilterBar from './BeneficiaryStatisticsReportsFilters';
 import BeneficiaryTable from './BeneficiaryStatisticsReportsTable';
 import BeneficiaryStatisticsReportsForm from './BeneficiaryStatisticsReportsForm';
 import BeneficiaryStatisticsReportsDetail from './BeneficiaryStatisticsReportsDetail';
@@ -30,62 +31,48 @@ function useBeneficiaryStatisticsReport() {
   const { message } = App.useApp();
   const report = useIrrigationReport('beneficiaries');
   const { rows, meta } = report;
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedZone, setZoneFilter] = useState(null);
-
-  const zoneOptions = useMemo(() => rows.map((r) => ({ value: r.zone, label: r.zone })), [rows]);
-  // A selected zone that is absent from the newly loaded fiscal year is dropped (derived, no effect needed).
-  const zoneFilter = selectedZone && rows.some((r) => r.zone === selectedZone) ? selectedZone : null;
-
-  const filteredRows = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
-    return rows.filter((r) => {
-      const zone = String(r.zone || '').toLowerCase();
-      const matchesSearch = zone.includes(q);
-      const matchesZone = zoneFilter ? zone === zoneFilter.toLowerCase() : true;
-      return matchesSearch && matchesZone;
-    });
-  }, [rows, searchTerm, zoneFilter]);
 
   const fhhTracked = !(Array.isArray(meta.untracked_metrics) && meta.untracked_metrics.includes('female_headed_households'))
     && (!rows.length || rows.some((r) => !isNull(r.female_headed_households)));
 
   const stats = useMemo(() => {
-    const totalMale = sum(filteredRows, 'farmers_male');
-    const totalFemale = sum(filteredRows, 'farmers_female');
+    const totalMale = sum(rows, 'farmers_male');
+    const totalFemale = sum(rows, 'farmers_female');
     const grandTotalFarmers = totalMale + totalFemale;
     return {
-      totalSchemes: sum(filteredRows, 'schemes_count'),
-      totalCommandHa: sum(filteredRows, 'command_area_ha'),
+      totalSchemes: sum(rows, 'schemes_count'),
+      totalCommandHa: sum(rows, 'command_area_ha'),
       grandTotalFarmers,
       totalMale,
       totalFemale,
       femaleSharePct: pct(totalFemale, grandTotalFarmers),
-      totalYouth: sum(filteredRows, 'youth_farmers'),
-      totalFHH: fhhTracked ? sum(filteredRows, 'female_headed_households') : null,
-      totalWuaMembers: sum(filteredRows, 'wua_members_total'),
-      totalWheatFarmers: sum(filteredRows, 'wheat_initiative_farmers'),
+      totalYouth: sum(rows, 'youth_farmers'),
+      totalFHH: fhhTracked ? sum(rows, 'female_headed_households') : null,
+      totalWuaMembers: sum(rows, 'wua_members_total'),
+      totalWheatFarmers: sum(rows, 'wheat_initiative_farmers'),
     };
-  }, [filteredRows, fhhTracked]);
+  }, [rows, fhhTracked]);
 
   const exportCsv = () => {
-    if (!filteredRows.length) {
+    if (!rows.length) {
       message.warning('No beneficiary demographic records available to export');
       return;
     }
-    exportRowsToCsv(filteredRows, CSV_COLUMNS, 'Irrigation_Beneficiary_Statistics_Report');
+    exportRowsToCsv(rows, CSV_COLUMNS, 'Irrigation_Beneficiary_Statistics_Report');
     message.success('Beneficiary statistics report exported successfully');
   };
 
   return {
-    report, filteredRows, zoneOptions, searchTerm, setSearchTerm, zoneFilter, setZoneFilter, stats, exportCsv,
+    report, rows, stats, exportCsv,
   };
 }
 
 
 function BeneficiaryStatisticsReportsContent() {
-  const { report, filteredRows, stats, filter, setFilter, search, setSearch, exportCsv } =
-    useBeneficiaryStatisticsReport();
+  const { report, rows, stats, exportCsv } = useBeneficiaryStatisticsReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -103,14 +90,20 @@ function BeneficiaryStatisticsReportsContent() {
         onExport={exportCsv}
       />
 
-      <BeneficiaryFilterBar filter={filter} onFilterChange={setFilter} search={search} onSearchChange={setSearch} />
-
-      <BeneficiaryTable rows={filteredRows} loading={report.loading} />
-
-      <BeneficiaryCharts rows={report.rows} />
+      {showCharts && <BeneficiaryCharts rows={rows} stats={stats} selectedZone={report.selectedZone} />}
+      {showTable && (
+        <BeneficiaryTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <BeneficiaryStatisticsReportsForm />
-      <BeneficiaryStatisticsReportsDetail />
+      <BeneficiaryStatisticsReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

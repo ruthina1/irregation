@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { App } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, sumBy, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';

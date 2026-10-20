@@ -1,10 +1,11 @@
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { exportReport, sum } from '../shared/reportUtils';
-import InstitutionsKpis from './InstitutionsReportsStats';
+import InstitutionsKpis, { InstitutionsCharts } from './InstitutionsReportsStats';
 import InstitutionsTable from './InstitutionsReportsTable';
 import InstitutionsReportsFilters from './InstitutionsReportsFilters';
 import InstitutionsReportsForm from './InstitutionsReportsForm';
@@ -54,6 +55,9 @@ function useInstitutionsReport() {
 
 function InstitutionsReportsContent() {
   const { report, rows, stats, exportCsv } = useInstitutionsReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -71,11 +75,21 @@ function InstitutionsReportsContent() {
         onExport={exportCsv}
       />
 
-      <InstitutionsTable rows={rows} loading={report.loading} />
+      {showCharts && <InstitutionsCharts rows={rows} stats={stats} selectedZone={report.selectedZone} />}
+      {showTable && (
+        <InstitutionsTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <InstitutionsReportsFilters />
       <InstitutionsReportsForm />
-      <InstitutionsReportsDetail />
+      <InstitutionsReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

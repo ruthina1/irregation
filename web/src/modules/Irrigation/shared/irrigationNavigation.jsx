@@ -26,28 +26,37 @@ import {
   UsergroupAddOutlined,
 } from '@ant-design/icons';
 import './irrigationNavigation.css';
+import { MODULE_PERMISSIONS, SUBMODULE_PERMISSIONS } from '../../../services/api/api';
 
 /* Sidebar entries for the Irrigation module: outlined icons, no emoji. */
 
 /* Leaf entries get a short dash before the icon, like the reference sidebar. */
-const item = (key, label, Icon) => ({
-  key,
-  label,
-  icon: (
-    <span className="irr-nav-leaf-icon">
-      <span className="irr-nav-dash" aria-hidden="true" />
-      <Icon />
-    </span>
-  ),
-});
+const item = (key, label, Icon, permissions) => {
+  const perms = permissions || SUBMODULE_PERMISSIONS[key] || MODULE_PERMISSIONS[key] || null;
+  return {
+    key,
+    label,
+    icon: (
+      <span className="irr-nav-leaf-icon">
+        <span className="irr-nav-dash" aria-hidden="true" />
+        <Icon />
+      </span>
+    ),
+    ...(perms && { permissions: Array.isArray(perms) ? perms : [perms] }),
+  };
+};
 
-const group = (key, label, Icon, children) => ({
-  key,
-  label,
-  icon: <Icon />,
-  popupClassName: 'irr-nav-popup',
-  children,
-});
+const group = (key, label, Icon, children, permissions) => {
+  const perms = permissions || MODULE_PERMISSIONS[key] || SUBMODULE_PERMISSIONS[key] || null;
+  return {
+    key,
+    label,
+    icon: <Icon />,
+    popupClassName: 'irr-nav-popup',
+    children,
+    ...(perms && { permissions: Array.isArray(perms) ? perms : [perms] }),
+  };
+};
 
 export const irrigationNavigation = {
   ...group('irrigation-development', 'Irrigation Development & Drainage', NodeIndexOutlined, [

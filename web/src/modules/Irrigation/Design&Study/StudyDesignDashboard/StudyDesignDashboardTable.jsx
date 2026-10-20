@@ -1,7 +1,6 @@
-import React from 'react';
-import { Card, Table, Tag } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { toNumber } from '../../shared/utils';
+import { Button, Card, Col, Empty, Row, Table, Tag } from 'antd';
+import { CheckCircleOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { extractName, toNumber } from '../../shared/utils';
 
 
 import {

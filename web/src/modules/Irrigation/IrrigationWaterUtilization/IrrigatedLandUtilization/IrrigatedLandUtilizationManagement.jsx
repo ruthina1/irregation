@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, sumBy, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
@@ -199,6 +200,13 @@ function useIrrigatedLandUtilization() {
     (s) => extractName(s.scheme_name, '').toLowerCase() === (schemeName || '').toLowerCase()
   );
 
+  const navigate = useNavigate();
+  const openScheme = (record) => {
+    navigate('/irrigation/construction/projects', {
+      state: { filterContractCode: record?.scheme_code },
+    });
+  };
+
   return {
     fiscalYear,
     setFiscalYear,
@@ -221,6 +229,7 @@ function useIrrigatedLandUtilization() {
     deleteRecord,
     exportCsv,
     findScheme,
+    openScheme,
   };
 }
 
@@ -232,13 +241,15 @@ function IrrigatedLandUtilizationContent() {
   const [formState, setFormState] = useState({ open: false, record: null });
   const [dossierRecord, setDossierRecord] = useState(null);
 
+  const recordsObj = page.records || {};
+
   return (
     <div className="irr-page">
       <IrrigationBreadcrumb section="Irrigation Water Utilization" title="Irrigated Land Utilization (የመስኖ መሬት አጠቃቀም)" />
 
-      <LoadErrorAlert error={page.records.error} onRetry={page.reload} />
+      <LoadErrorAlert error={recordsObj.error} onRetry={page.reload} />
 
-      <IrrigationStatsSection onRefresh={page.reload} loading={page.records.loading}>
+      <IrrigationStatsSection onRefresh={page.reload} loading={recordsObj.loading}>
         <UtilizationStats stats={page.stats} />
       </IrrigationStatsSection>
 
@@ -249,15 +260,17 @@ function IrrigatedLandUtilizationContent() {
         fiscalYear={page.fiscalYear}
         onFiscalYearChange={page.setFiscalYear}
         onRefresh={page.reload}
-        loading={page.records.loading}
+        loading={recordsObj.loading}
       >
         <UtilizationFilters
           searchTerm={page.searchTerm}
           onSearchChange={page.setSearchTerm}
-          category={page.categoryFilter}
-          onCategoryChange={page.setCategoryFilter}
-          typology={page.typologyFilter}
-          onTypologyChange={page.setTypologyFilter}
+          roundFilter={page.roundFilter}
+          onRoundChange={page.setRoundFilter}
+          modalityFilter={page.modalityFilter}
+          onModalityChange={page.setModalityFilter}
+          adequacyFilter={page.adequacyFilter}
+          onAdequacyChange={page.setAdequacyFilter}
           onExport={page.exportCsv}
           onCreate={() => setFormState({ open: true, record: null })}
         />
@@ -265,10 +278,12 @@ function IrrigatedLandUtilizationContent() {
 
       <UtilizationTable
         data={page.filteredRecords}
-        loading={page.records.loading}
+        loading={recordsObj.loading}
         onView={setDossierRecord}
         onEdit={(record) => setFormState({ open: true, record })}
         onDelete={page.deleteRecord}
+        onAdequacyChange={page.changeAdequacy}
+        onOpenScheme={page.openScheme}
       />
 
       <UtilizationChart data={page.chartData} />
@@ -276,8 +291,10 @@ function IrrigatedLandUtilizationContent() {
       <UtilizationFormModal
         open={formState.open}
         editingRecord={formState.record}
+        schemes={page.schemes?.records || []}
         fiscalYear={page.fiscalYear}
-        nextCode={`UTL-${page.fiscalYear.slice(0, 4)}-${String(page.records.records.length + 1).padStart(3, '0')}`}
+        findScheme={page.findScheme}
+        nextCode={`UTL-${page.fiscalYear.slice(0, 4)}-${String((recordsObj.records || []).length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, record: null })}
         onSubmit={(values, form) => page.saveRecord(values, formState.record, form)}
       />

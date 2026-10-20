@@ -3,7 +3,7 @@ import { App } from 'antd';
 import { irrigationStudyDesignApi } from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
@@ -279,6 +279,7 @@ function ProfessionalCapacityBuildingContent() {
       <ProfessionalCapacityBuildingForm
         open={formState.open}
         editingTraining={formState.training}
+        locations={page.locations}
         fiscalYear={page.fiscalYear}
         nextCode={`TRN-${page.fiscalYear.slice(0, 4)}-${String(page.trainings.records.length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, training: null })}

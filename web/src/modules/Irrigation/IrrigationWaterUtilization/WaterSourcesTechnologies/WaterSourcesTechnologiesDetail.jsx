@@ -1,7 +1,7 @@
 import { Button, Descriptions, Modal, Tag } from 'antd';
 import { EnvironmentOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { extractName, toNumber } from '../../shared/utils';
-import { TECHNOLOGY_STATUSES } from './WaterSourcesTechnologiesManagement';
+import { TECHNOLOGY_STATUSES } from './WaterSourcesTechnologiesConstants';
 
 export default function WaterSourceDossierModal({ record, onClose, emphasizeWua = false }) {
   const status = TECHNOLOGY_STATUSES.find((s) => s.value === record?.operational_status);

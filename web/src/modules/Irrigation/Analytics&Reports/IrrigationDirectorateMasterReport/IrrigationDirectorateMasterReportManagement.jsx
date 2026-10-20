@@ -1,11 +1,13 @@
-import { App } from 'antd';
+import { useMemo, useState } from 'react';
+import { App, Badge, Tabs } from 'antd';
+import { BankOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { exportReport, pct, sum } from '../shared/reportUtils';
 import DirectorateKpis, { DirectorateCharts } from './IrrigationDirectorateMasterReportStats';
-import ProgramPortfolioTable, { ZonalSynthesisTable } from './IrrigationDirectorateMasterReportTable';
+import { ProgramPortfolioTable, ZonalSynthesisTable } from './IrrigationDirectorateMasterReportTable';
 import IrrigationDirectorateMasterReportFilters from './IrrigationDirectorateMasterReportFilters';
 import IrrigationDirectorateMasterReportForm from './IrrigationDirectorateMasterReportForm';
 import IrrigationDirectorateMasterReportDetail from './IrrigationDirectorateMasterReportDetail';
@@ -63,12 +65,59 @@ function useDirectorateMasterReport() {
     'Directorate Master Report exported successfully'
   );
 
-  return { report, rows, portfolio, stats, exportCsv };
+  return {
+    report,
+    rows,
+    portfolio,
+    zonalRows: rows,
+    portfolioRows: portfolio,
+    stats,
+    exportCsv,
+  };
 }
 
 
 function IrrigationDirectorateMasterReportContent() {
-  const { report, portfolioRows, zonalRows, stats, exportCsv } = useDirectorateMasterReport();
+  const { report, zonalRows, portfolioRows, stats, exportCsv } = useDirectorateMasterReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
+
+  const tabItems = [
+    {
+      key: 'zonal',
+      label: (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+          <EnvironmentOutlined style={{ color: '#1a5f2c' }} />
+          <span>Regional Zonal Synthesis (የዞኖች ዋና ሪፖርት)</span>
+          <Badge count={zonalRows.length} overflowCount={99} style={{ backgroundColor: '#1a5f2c' }} />
+        </span>
+      ),
+      children: (
+        <ZonalSynthesisTable
+          rows={zonalRows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      ),
+    },
+    {
+      key: 'portfolio',
+      label: (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+          <BankOutlined style={{ color: '#5b8a6b' }} />
+          <span>Capital Budget & Financing Portfolio (የበጀትና ፕሮግራሞች ፖርትፎሊዮ)</span>
+          <Badge count={portfolioRows.length} overflowCount={99} style={{ backgroundColor: '#5b8a6b' }} />
+        </span>
+      ),
+      children: (
+        <ProgramPortfolioTable
+          rows={portfolioRows}
+          loading={report.loading}
+        />
+      ),
+    },
+  ];
 
   return (
     <div className="irr-page">
@@ -86,15 +135,24 @@ function IrrigationDirectorateMasterReportContent() {
         onExport={exportCsv}
       />
 
-      <DirectorateCharts rows={zonalRows} />
+      {showCharts && <DirectorateCharts rows={zonalRows} stats={stats} selectedZone={report.selectedZone} />}
 
-      <ProgramPortfolioTable rows={portfolioRows} loading={report.loading} />
-
-      <ZonalSynthesisTable rows={zonalRows} loading={report.loading} />
+      {showTable && (
+        <Tabs
+          defaultActiveKey="zonal"
+          className="irr-report-tabs"
+          style={{ marginBottom: 24 }}
+          items={tabItems}
+        />
+      )}
 
       <IrrigationDirectorateMasterReportFilters />
       <IrrigationDirectorateMasterReportForm />
-      <IrrigationDirectorateMasterReportDetail />
+      <IrrigationDirectorateMasterReportDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+        fiscalYear={report.fiscalYear}
+      />
     </div>
   );
 }

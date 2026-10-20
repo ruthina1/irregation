@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { App } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, sumBy, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
@@ -201,6 +201,12 @@ function useAssociationCapacityBuilding() {
     wuas.reload();
   };
 
+  const openWua = (record) => {
+    navigate('/irrigation/institutions/water-users-associations', {
+      state: { searchWua: record?.wua_name || record?.wua_reg_code },
+    });
+  };
+
   return {
     fiscalYear,
     setFiscalYear,
@@ -215,12 +221,16 @@ function useAssociationCapacityBuilding() {
     trainings,
     wuas,
     filteredTrainings,
+    filteredRecords: filteredTrainings,
     stats,
     reload,
     saveTraining,
+    saveRecord: saveTraining,
     changeStatus,
     deleteTraining,
+    deleteRecord: deleteTraining,
     exportCsv,
+    openWua,
   };
 }
 
@@ -233,13 +243,15 @@ function AssociationCapacityBuildingContent() {
   const [formState, setFormState] = useState({ open: false, record: null });
   const [dossierRecord, setDossierRecord] = useState(null);
 
+  const trainingsObj = page.trainings || {};
+
   return (
     <div className="irr-page">
       <IrrigationBreadcrumb section="Irrigation Institutions Management" title="Association Capacity Building (የማህበራት ስልጠና እና አቅም ግንባታ)" />
 
-      <LoadErrorAlert error={page.trainings.error} onRetry={page.reload} />
+      <LoadErrorAlert error={trainingsObj.error} onRetry={page.reload} />
 
-      <IrrigationStatsSection onRefresh={page.reload} loading={page.trainings.loading}>
+      <IrrigationStatsSection onRefresh={page.reload} loading={trainingsObj.loading}>
         <TrainingStats stats={page.stats} />
       </IrrigationStatsSection>
 
@@ -250,7 +262,7 @@ function AssociationCapacityBuildingContent() {
         fiscalYear={page.fiscalYear}
         onFiscalYearChange={page.setFiscalYear}
         onRefresh={page.reload}
-        loading={page.trainings.loading}
+        loading={trainingsObj.loading}
       >
         <TrainingFilters
           searchTerm={page.searchTerm}
@@ -264,19 +276,20 @@ function AssociationCapacityBuildingContent() {
 
       <TrainingTable
         data={page.filteredRecords}
-        loading={page.trainings.loading}
+        loading={trainingsObj.loading}
         onView={setDossierRecord}
         onEdit={(record) => setFormState({ open: true, record })}
         onDelete={page.deleteTraining}
+        onStatusChange={page.changeStatus}
         onOpenWua={page.openWua}
       />
 
       <TrainingFormModal
         open={formState.open}
         editingRecord={formState.record}
-        wuas={page.wuas}
+        wuas={page.wuas?.records || []}
         fiscalYear={page.fiscalYear}
-        nextCode={`TRN-${page.fiscalYear.slice(0, 4)}-${String(page.trainings.records.length + 1).padStart(3, '0')}`}
+        nextCode={`TRN-${page.fiscalYear.slice(0, 4)}-${String((trainingsObj.records || []).length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, record: null })}
         onSubmit={(values, form) => page.saveTraining(values, formState.record, form)}
       />

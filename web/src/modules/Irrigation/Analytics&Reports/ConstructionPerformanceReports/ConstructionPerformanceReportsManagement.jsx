@@ -1,10 +1,11 @@
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationStatsSection from '../../shared/components/IrrigationStatsSection';
 import ReportHeader from '../shared/ReportHeader';
 import useIrrigationReport from '../shared/useIrrigationReport';
 import { exportReport, pct, sum } from '../shared/reportUtils';
-import ConstructionKpis from './ConstructionPerformanceReportsStats';
+import ConstructionKpis, { ConstructionCharts } from './ConstructionPerformanceReportsStats';
 import ConstructionProgramTable from './ConstructionPerformanceReportsTable';
 import ConstructionPerformanceReportsFilters from './ConstructionPerformanceReportsFilters';
 import ConstructionPerformanceReportsForm from './ConstructionPerformanceReportsForm';
@@ -54,6 +55,9 @@ function useConstructionPerformanceReport() {
 
 function ConstructionPerformanceReportsContent() {
   const { report, rows, stats, exportCsv } = useConstructionPerformanceReport();
+  const [detailRecord, setDetailRecord] = useState(null);
+  const showCharts = report.viewMode === 'charts';
+  const showTable = report.viewMode === 'table';
 
   return (
     <div className="irr-page">
@@ -71,11 +75,21 @@ function ConstructionPerformanceReportsContent() {
         onExport={exportCsv}
       />
 
-      <ConstructionProgramTable rows={rows} loading={report.loading} />
+      {showCharts && <ConstructionCharts rows={rows} stats={stats} selectedProgram={report.selectedZone} />}
+      {showTable && (
+        <ConstructionProgramTable
+          rows={rows}
+          loading={report.loading}
+          onView={(record) => setDetailRecord(record)}
+        />
+      )}
 
       <ConstructionPerformanceReportsFilters />
       <ConstructionPerformanceReportsForm />
-      <ConstructionPerformanceReportsDetail />
+      <ConstructionPerformanceReportsDetail
+        record={detailRecord}
+        onClose={() => setDetailRecord(null)}
+      />
     </div>
   );
 }

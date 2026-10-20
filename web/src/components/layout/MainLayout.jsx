@@ -234,6 +234,7 @@ const MainLayout = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const isIrrigationPage = location.pathname.startsWith('/irrigation');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 992);
@@ -241,6 +242,11 @@ const MainLayout = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const sidebarWidth = isMobile ? 0 : (collapsed ? 80 : 270);
+    document.documentElement.style.setProperty('--app-sidebar-width', `${sidebarWidth}px`);
+  }, [collapsed, isMobile]);
 
   const handleLogout = async () => {
     try {
@@ -256,11 +262,19 @@ const MainLayout = () => {
   const filteredMenuItems = useMemo(() => {
     const filterMenu = (items) => {
       return items
-        .filter((item) => !item.permissions || hasPermission(item.permissions))
+        .filter((item) => {
+          if (item.type === 'divider') return true;
+          return !item.permissions || hasPermission(item.permissions);
+        })
         .map((item) => {
-          if (item.children) return { ...item, children: filterMenu(item.children) };
+          if (item.children) {
+            const children = filterMenu(item.children);
+            if (children.length === 0) return null;
+            return { ...item, children };
+          }
           return item;
-        });
+        })
+        .filter(Boolean);
     };
     return filterMenu(navigationMenu);
   }, [hasPermission]);
@@ -408,6 +422,17 @@ const MainLayout = () => {
 
         /* General Refinements */
         .ant-tabs-nav::before { border-bottom: 1px solid ${COLORS.border} !important; }
+
+        /* Workspace Centered Modals (centers relative to the workspace content area, taking the sidebar into account) */
+        .irr-workspace-modal {
+          padding-left: var(--app-sidebar-width, 270px) !important;
+          transition: padding-left 0.2s ease-in-out;
+        }
+        @media (max-width: 991px) {
+          .irr-workspace-modal {
+            padding-left: 0 !important;
+          }
+        }
       `}</style>
  <FeedbackDrawer />
       {/* Profile/Settings Modal */}
@@ -484,15 +509,19 @@ const MainLayout = () => {
             </Space>
           </Header>
 
-          <Content style={{ padding: '0px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {/* Main Application Container */}
-            <div style={{ flex: 1, background: '#FFFFFF', borderRadius: 12, border: `1px solid ${COLORS.border}`, padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
+          <Content style={{ padding: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {isIrrigationPage ? (
               <Outlet />
-            </div>
-            {/* Global Footer */}
-            <div style={{ textAlign: 'center', padding: '24px 0 8px', color: COLORS.textMuted, fontSize: 12, fontWeight: 500 }}>
-               © {new Date().getFullYear()} Amhara Regional State Bureau of Agriculture · Integrated Agriculture Information Management System (IAIMS)
-            </div>
+            ) : (
+              <div style={{ flex: 1, background: '#FFFFFF', borderRadius: 12, border: `1px solid ${COLORS.border}`, padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' }}>
+                <Outlet />
+              </div>
+            )}
+            {!isIrrigationPage && (
+              <div style={{ textAlign: 'center', padding: '24px 0 8px', color: COLORS.textMuted, fontSize: 12, fontWeight: 500 }}>
+                 © {new Date().getFullYear()} Amhara Regional State Bureau of Agriculture · Integrated Agriculture Information Management System (IAIMS)
+              </div>
+            )}
           </Content>
         </Layout>
       </Layout>

@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, sumBy, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
@@ -230,6 +230,12 @@ function useSchemeMaintenance() {
     (s) => extractName(s.scheme_name, '').toLowerCase() === (schemeName || '').toLowerCase()
   );
 
+  const openWua = (record) => {
+    navigate('/irrigation/institutions/water-users-associations', {
+      state: { searchWua: record?.wua_name },
+    });
+  };
+
   return {
     fiscalYear,
     setFiscalYear,
@@ -237,19 +243,26 @@ function useSchemeMaintenance() {
     setSearchTerm,
     canalTypeFilter,
     setCanalTypeFilter,
+    typeFilter: canalTypeFilter,
+    setTypeFilter: setCanalTypeFilter,
     statusFilter,
     setStatusFilter,
     records,
+    campaigns: records,
     schemes,
+    wuas: schemes,
     filteredRecords,
     stats,
     chartData,
     reload,
     saveRecord,
+    saveCampaign: saveRecord,
     changeStatus,
     deleteRecord,
+    deleteCampaign: deleteRecord,
     exportCsv,
     findScheme,
+    openWua,
   };
 }
 
@@ -262,13 +275,15 @@ function SchemeMaintenanceCleaningContent() {
   const [formState, setFormState] = useState({ open: false, record: null });
   const [dossierRecord, setDossierRecord] = useState(null);
 
+  const campaignsObj = page.campaigns || page.records || {};
+
   return (
     <div className="irr-page">
       <IrrigationBreadcrumb section="Irrigation Institutions Management" title="Scheme Maintenance & Canal Cleaning (የመስኖ ቦይ ጥገና እና ፅዳት)" />
 
-      <LoadErrorAlert error={page.campaigns.error} onRetry={page.reload} />
+      <LoadErrorAlert error={campaignsObj.error} onRetry={page.reload} />
 
-      <IrrigationStatsSection onRefresh={page.reload} loading={page.campaigns.loading}>
+      <IrrigationStatsSection onRefresh={page.reload} loading={campaignsObj.loading}>
         <MaintenanceStats stats={page.stats} />
       </IrrigationStatsSection>
 
@@ -279,14 +294,14 @@ function SchemeMaintenanceCleaningContent() {
         fiscalYear={page.fiscalYear}
         onFiscalYearChange={page.setFiscalYear}
         onRefresh={page.reload}
-        loading={page.campaigns.loading}
+        loading={campaignsObj.loading}
       >
         <MaintenanceFilters
           searchTerm={page.searchTerm}
           onSearchChange={page.setSearchTerm}
-          type={page.typeFilter}
-          onTypeChange={page.setTypeFilter}
-          status={page.statusFilter}
+          canalTypeFilter={page.canalTypeFilter}
+          onCanalTypeChange={page.setCanalTypeFilter}
+          statusFilter={page.statusFilter}
           onStatusChange={page.setStatusFilter}
           onExport={page.exportCsv}
           onCreate={() => setFormState({ open: true, record: null })}
@@ -295,10 +310,11 @@ function SchemeMaintenanceCleaningContent() {
 
       <MaintenanceTable
         data={page.filteredRecords}
-        loading={page.campaigns.loading}
+        loading={campaignsObj.loading}
         onView={setDossierRecord}
         onEdit={(record) => setFormState({ open: true, record })}
         onDelete={page.deleteCampaign}
+        onStatusChange={page.changeStatus}
         onOpenWua={page.openWua}
       />
 
@@ -307,9 +323,10 @@ function SchemeMaintenanceCleaningContent() {
       <MaintenanceFormModal
         open={formState.open}
         editingRecord={formState.record}
-        wuas={page.wuas}
+        schemes={page.schemes?.records || []}
         fiscalYear={page.fiscalYear}
-        nextCode={`MNT-${page.fiscalYear.slice(0, 4)}-${String(page.campaigns.records.length + 1).padStart(3, '0')}`}
+        findScheme={page.findScheme}
+        nextCode={`MNT-${page.fiscalYear.slice(0, 4)}-${String((campaignsObj.records || []).length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, record: null })}
         onSubmit={(values, form) => page.saveCampaign(values, formState.record, form)}
       />

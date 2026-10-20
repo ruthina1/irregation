@@ -4,24 +4,36 @@ import StatCard from '../../shared/components/StatCard';
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, Tooltip as RechartsTooltip, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 /** KPI cards (Excel Section 2 command & beneficiary metrics). */
-export default function BenefitStats({ stats }) {
+export default function BenefitStats({ stats = {} }) {
+  const {
+    totalDevelopedHa = 0,
+    overallLandDevRate = 0,
+    totalPlannedHa = 0,
+    totalCultivatedHa = 0,
+    totalBeneficiaryFarmers = 0,
+    totalMale = 0,
+    totalFemale = 0,
+    femaleSharePct = 0,
+    totalSchemes = 0,
+  } = stats || {};
+
   return (
     <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
       <Col xs={24} sm={12} lg={6}>
-        <StatCard title="Total Developed Land (የለማ መሬት)" value={stats.totalDevelopedHa} suffix="Ha" prefix={<AreaChartOutlined />}
-          color="#1a5f2c" footnote={`${stats.overallLandDevRate}% of ${stats.totalPlannedHa.toLocaleString()} Ha Planned`} />
+        <StatCard title="Total Developed Land (የለማ መሬት)" value={totalDevelopedHa} suffix="Ha" prefix={<AreaChartOutlined />}
+          color="#1a5f2c" footnote={`${overallLandDevRate}% of ${(Number(totalPlannedHa) || 0).toLocaleString()} Ha Planned`} />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <StatCard title="Active Irrigated Cultivated Land" value={stats.totalCultivatedHa} suffix="Ha" prefix={<RiseOutlined />}
+        <StatCard title="Active Irrigated Cultivated Land" value={totalCultivatedHa} suffix="Ha" prefix={<RiseOutlined />}
           color="#5b8a6b" footnote="Highland Wheat, Pulses & Vegetables" />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <StatCard title="Direct Beneficiary Farmers (ድምር)" value={stats.totalBeneficiaryFarmers} prefix={<TeamOutlined />}
+        <StatCard title="Direct Beneficiary Farmers (ድምር)" value={totalBeneficiaryFarmers} prefix={<TeamOutlined />}
           color="#64748b"
-          footnote={`Male: ${stats.totalMale.toLocaleString()} • Female: ${stats.totalFemale.toLocaleString()} (${stats.femaleSharePct}%)`} />
+          footnote={`Male: ${(Number(totalMale) || 0).toLocaleString()} • Female: ${(Number(totalFemale) || 0).toLocaleString()} (${femaleSharePct}%)`} />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <StatCard title="Monitored Irrigation Schemes" value={stats.totalSchemes} prefix={<CheckCircleOutlined />}
+        <StatCard title="Monitored Irrigation Schemes" value={totalSchemes} prefix={<CheckCircleOutlined />}
           color="#a16207" footnote="Under Regional & Partner Financing" />
       </Col>
     </Row>
@@ -32,8 +44,10 @@ export default function BenefitStats({ stats }) {
 // --- BenefitCharts ---
 
 /** Command-area delivery per scheme and the beneficiary gender split. */
-export function BenefitCharts({ chartData, genderShareData }) {
-  const hasGender = genderShareData.some((g) => g.value > 0);
+export function BenefitCharts({ chartData = [], genderShareData = [], data }) {
+  const safeChartData = Array.isArray(chartData) && chartData.length > 0 ? chartData : (Array.isArray(data) ? data : []);
+  const safeGenderData = Array.isArray(genderShareData) ? genderShareData : [];
+  const hasGender = safeGenderData.some((g) => (Number(g?.value) || 0) > 0);
 
   return (
     <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
@@ -44,9 +58,9 @@ export function BenefitCharts({ chartData, genderShareData }) {
           style={{ borderRadius: 8, height: '100%' }}
         >
           <div style={{ height: 230 }}>
-            {chartData.length ? (
+            {safeChartData.length ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} barSize={26}>
+                <BarChart data={safeChartData} barSize={26}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                   <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#595959' }} />
                   <YAxis tick={{ fontSize: 11, fill: '#595959' }} unit=" Ha" />
@@ -70,8 +84,8 @@ export function BenefitCharts({ chartData, genderShareData }) {
             {hasGender ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={genderShareData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={4}>
-                    {genderShareData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                  <Pie data={safeGenderData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={4}>
+                    {safeGenderData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
                   </Pie>
                   <RechartsTooltip />
                 </PieChart>
@@ -79,10 +93,10 @@ export function BenefitCharts({ chartData, genderShareData }) {
             ) : <Empty description="No beneficiary farmers recorded" style={{ paddingTop: 30 }} />}
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, fontSize: 11 }}>
-            {genderShareData.map((g) => (
+            {safeGenderData.map((g) => (
               <span key={g.name} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: g.color }} />
-                {g.name}: {g.value.toLocaleString()}
+                {g.name}: {(Number(g.value) || 0).toLocaleString()}
               </span>
             ))}
           </div>

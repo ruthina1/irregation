@@ -46,6 +46,7 @@ export default function StudyDesignDashboardStats({ kpis, onNavigate }) {
           suffix={k.active_studies !== null && k.active_studies !== undefined ? `/ ${k.active_studies}` : undefined}
           prefix={<BuildOutlined />}
           color="#2f7d4a"
+          onClick={() => onNavigate && onNavigate(ROUTES.shelf)}
         >
           <Progress percent={toNumber(k.construction_ready_pct)} size="small" strokeColor="#2f7d4a" style={{ marginTop: 6 }} />
         </StatCard>
@@ -58,6 +59,7 @@ export default function StudyDesignDashboardStats({ kpis, onNavigate }) {
           suffix={k.total_irrigable_ha === null || k.total_irrigable_ha === undefined ? undefined : 'Ha'}
           prefix={<AreaChartOutlined />}
           color="#a16207"
+          onClick={() => onNavigate && onNavigate(ROUTES.reports)}
         >
           <div style={{ marginTop: 8, fontSize: 12, color: '#595959' }}>
             {k.total_households === null || k.total_households === undefined

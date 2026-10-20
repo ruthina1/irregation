@@ -3,7 +3,7 @@ import { Alert, App, Col, Divider, Form, Input, InputNumber, Modal, Row, Select 
 import { LineChartOutlined } from '@ant-design/icons';
 import EthDateFields from '../../shared/components/EthDateFields';
 import { ethDateFields, extractName } from '../../shared/utils';
-import { NEW_LOG_DEFAULTS } from './ConstructionProgressPerformanceManagement';
+import { NEW_LOG_DEFAULTS } from './ConstructionProgressPerformanceConstants';
 
 const { TextArea } = Input;
 const sectionStyle = { margin: '6px 0 10px', fontSize: 12, color: '#1a5f2c', fontWeight: 600 };

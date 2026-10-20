@@ -4,13 +4,17 @@ import StatCard from '../../shared/components/StatCard';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts';
 
 /** KPI cards (Excel Section 4 indicators: existing vs new land, expansion). */
-export default function UtilizationStats({ stats }) {
+export default function UtilizationStats({ stats = {} }) {
+  const safeStats = stats || {};
+  const totalMale = Number(safeStats.totalMale) || 0;
+  const totalFemale = Number(safeStats.totalFemale) || 0;
+
   return (
     <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Total Effective Irrigated Land"
-          value={stats.grandEffectiveHa}
+          value={safeStats.grandEffectiveHa || 0}
           suffix="Ha"
           prefix={<AreaChartOutlined />}
           color="#1a5f2c"
@@ -20,7 +24,7 @@ export default function UtilizationStats({ stats }) {
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Existing Scheme Land (በነባር)"
-          value={stats.existingLandHa}
+          value={safeStats.existingLandHa || 0}
           suffix="Ha"
           prefix={<BuildOutlined />}
           color="#5b8a6b"
@@ -30,7 +34,7 @@ export default function UtilizationStats({ stats }) {
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="New Scheme Land (በአዲስ)"
-          value={stats.newLandHa}
+          value={safeStats.newLandHa || 0}
           suffix="Ha"
           prefix={<RiseOutlined />}
           color="#2f7d4a"
@@ -40,10 +44,10 @@ export default function UtilizationStats({ stats }) {
       <Col xs={24} sm={12} lg={6}>
         <StatCard
           title="Beneficiary Farmers Served"
-          value={stats.totalFarmers}
+          value={safeStats.totalFarmers || 0}
           prefix={<TeamOutlined />}
           color="#64748b"
-          footnote={`Male: ${stats.totalMale.toLocaleString()} • Female: ${stats.totalFemale.toLocaleString()} (${stats.femaleSharePct}%)`}
+          footnote={`Male: ${totalMale.toLocaleString()} • Female: ${totalFemale.toLocaleString()} (${safeStats.femaleSharePct || 0}%)`}
         />
       </Col>
     </Row>
@@ -54,7 +58,9 @@ export default function UtilizationStats({ stats }) {
 // --- UtilizationChart ---
 
 /** Active irrigated land vs expansion network area per scheme (Ha). */
-export function UtilizationChart({ data }) {
+export function UtilizationChart({ data = [] }) {
+  const safeData = Array.isArray(data) ? data : [];
+
   return (
     <Card
       title={<span style={{ fontSize: 14, fontWeight: 600 }}>Active Irrigated Land vs. Conveyance Network Expansion Area (Hectares)</span>}
@@ -62,9 +68,9 @@ export function UtilizationChart({ data }) {
       style={{ marginBottom: 20, borderRadius: 8 }}
     >
       <div style={{ height: 230 }}>
-        {data.length ? (
+        {safeData.length ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barSize={26}>
+            <BarChart data={safeData} barSize={26}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#595959' }} />
               <YAxis tick={{ fontSize: 11, fill: '#595959' }} unit=" Ha" />

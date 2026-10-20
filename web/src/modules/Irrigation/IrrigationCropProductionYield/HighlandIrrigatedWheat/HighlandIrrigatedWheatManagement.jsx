@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import irrigationApi from '../../../../services/api/irrigationApi';
 import useIrrigationRecords from '../../shared/hooks/useIrrigationRecords';
 import { CURRENT_FISCAL_YEAR } from '../../shared/constants';
-import { exportRowsToCsv, extractName, notifyApiError, sumBy, toNumber } from '../../shared/utils';
+import { exportRowsToCsv, extractName, notifyApiError, percent, sumBy, toNumber } from '../../shared/utils';
 import IrrigationBreadcrumb from '../../shared/components/IrrigationBreadcrumb';
 import IrrigationPageHeader from '../../shared/components/IrrigationPageHeader';
 import LoadErrorAlert from '../../shared/components/LoadErrorAlert';
@@ -204,6 +204,8 @@ function useHighlandWheat() {
     (s) => extractName(s.scheme_name, '').toLowerCase() === (schemeName || '').toLowerCase()
   );
 
+  const openSeasonal = () => navigate('/irrigation/production/seasonal-production');
+
   return {
     fiscalYear, setFiscalYear,
     searchTerm, setSearchTerm,
@@ -211,6 +213,8 @@ function useHighlandWheat() {
     varietyFilter, setVarietyFilter,
     statusFilter, setStatusFilter,
     ledger,
+    records: ledger,
+    reload: ledger.reload,
     schemes: schemes.records,
     schemesError: schemes.error,
     filteredRecords,
@@ -223,6 +227,7 @@ function useHighlandWheat() {
     deleteRecord,
     exportCsv,
     findScheme,
+    openSeasonal,
   };
 }
 
@@ -235,13 +240,15 @@ function HighlandIrrigatedWheatContent() {
   const [formState, setFormState] = useState({ open: false, record: null });
   const [dossierRecord, setDossierRecord] = useState(null);
 
+  const recordsObj = page.records || page.ledger || {};
+
   return (
     <div className="irr-page">
       <IrrigationBreadcrumb section="Irrigation Crop Production & Yield" title="Highland Irrigated Wheat (የደጋ የመስኖ ስንዴ ልማት)" />
 
-      <LoadErrorAlert error={page.records.error} onRetry={page.reload} />
+      <LoadErrorAlert error={recordsObj.error} onRetry={page.reload} />
 
-      <IrrigationStatsSection onRefresh={page.reload} loading={page.records.loading}>
+      <IrrigationStatsSection onRefresh={page.reload} loading={recordsObj.loading}>
         <WheatStats stats={page.stats} />
       </IrrigationStatsSection>
 
@@ -252,7 +259,7 @@ function HighlandIrrigatedWheatContent() {
         fiscalYear={page.fiscalYear}
         onFiscalYearChange={page.setFiscalYear}
         onRefresh={page.reload}
-        loading={page.records.loading}
+        loading={recordsObj.loading}
       >
         <WheatFilters
           searchTerm={page.searchTerm}
@@ -268,21 +275,23 @@ function HighlandIrrigatedWheatContent() {
 
       <WheatTable
         data={page.filteredRecords}
-        loading={page.records.loading}
+        loading={recordsObj.loading}
         onView={setDossierRecord}
         onEdit={(record) => setFormState({ open: true, record })}
         onDelete={page.deleteRecord}
+        onStatusChange={page.changeStatus}
+        onToggleMechanized={page.toggleMechanized}
         onOpenSeasonal={page.openSeasonal}
       />
 
-      <WheatCharts data={page.chartData} />
+      <WheatCharts clusterData={page.chartData} varietyData={page.varietyShareData} />
 
       <WheatFormModal
         open={formState.open}
         editingRecord={formState.record}
         schemes={page.schemes}
         fiscalYear={page.fiscalYear}
-        nextCode={`WHT-${page.fiscalYear.slice(0, 4)}-${String(page.records.records.length + 1).padStart(3, '0')}`}
+        nextCode={`WHT-${page.fiscalYear.slice(0, 4)}-${String((recordsObj.records || []).length + 1).padStart(3, '0')}`}
         onCancel={() => setFormState({ open: false, record: null })}
         onSubmit={(values, form) => page.saveRecord(values, formState.record, form)}
       />

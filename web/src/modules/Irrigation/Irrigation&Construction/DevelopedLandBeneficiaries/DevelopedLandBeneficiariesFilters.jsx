@@ -1,7 +1,7 @@
 import { Button, Input, Select } from 'antd';
 import { DownloadOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import FilterBar from '../../shared/components/FilterBar';
-import { BENEFIT_STATUSES, FUNDING_PROGRAMS, SCHEME_TYPES } from './DevelopedLandBeneficiariesManagement';
+import { BENEFIT_STATUSES, FUNDING_PROGRAMS, SCHEME_TYPES } from './DevelopedLandBeneficiariesConstants';
 
 export default function BenefitFilters({
   searchTerm, onSearchChange, schemeTypeFilter, onSchemeTypeChange, statusFilter, onStatusChange,

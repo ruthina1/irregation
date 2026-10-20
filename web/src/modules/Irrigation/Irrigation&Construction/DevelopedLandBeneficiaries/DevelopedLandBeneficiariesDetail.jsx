@@ -1,7 +1,7 @@
 import { Button, Descriptions, Modal, Space, Tag } from 'antd';
 import { AreaChartOutlined, CalendarOutlined, EnvironmentOutlined, LinkOutlined } from '@ant-design/icons';
 import { extractName, toNumber } from '../../shared/utils';
-import { BENEFIT_STATUSES, cropList } from './DevelopedLandBeneficiariesManagement';
+import { BENEFIT_STATUSES, cropList } from './DevelopedLandBeneficiariesConstants';
 
 /** Developed land & socio-economic impact dossier. */
 export default function BenefitDossierModal({ record, onClose, onOpenContract }) {
